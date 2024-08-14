@@ -1,11 +1,13 @@
 import Image from "next/image";
 import getStripe from "@/utils/getStripe";
+import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import {
   AppBar,
   Box,
   Button,
   Container,
+  Grid,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -13,7 +15,7 @@ import Head from "next/head";
 
 export default function Home() {
   return (
-    <Container maxWidth="100vh">
+    <Container maxWidth={false} disableGutters>
       <Head>
         <title>qna generator SaaS</title>
         <meta name="description" content="qna generator SaaS" />
@@ -21,12 +23,26 @@ export default function Home() {
 
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             QnA Generator SaaS
           </Typography>
           <SignedOut>
-            <Button color="inherit">Login</Button>
-            <Button color="inherit">SIgn Up</Button>
+            <Link href="/sign-in" passHref>
+              <Button
+                color="inherit"
+                sx={{ textDecoration: "none", color: "white" }}
+              >
+                Login
+              </Button>
+            </Link>
+            <Link href="/sign-up" passHref>
+              <Button
+                color="inherit"
+                sx={{ textDecoration: "none", color: "white" }}
+              >
+                Sign Up
+              </Button>
+            </Link>
           </SignedOut>
           <SignedIn>
             <UserButton />
@@ -34,14 +50,220 @@ export default function Home() {
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ textAlign: "center", my: 4 }}>
-        <Typography variant="h4">Welcome to QnA Generator SaaS</Typography>
-        <Typography variant="body1">
+      <Box
+        sx={{
+          textAlign: "center",
+          my: 6,
+          py: 4,
+          px: 2,
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          Welcome to QnA Generator SaaS
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
           This is a SaaS application for generating QnA pairs
         </Typography>
-        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ borderRadius: "20px" }}
+        >
           Generate QnA
         </Button>
+      </Box>
+
+      <Box sx={{ my: 6 }}>
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ mb: 4, textAlign: "center" }}
+        >
+          Key Features
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">
+                Automatic Question Generation
+              </Typography>
+              <hr
+                style={{
+                  border: "0",
+                  borderTop: "1px solid #eee",
+                  margin: "16px 0",
+                }}
+              />
+              <Typography>
+                Effortlessly generate high-quality questions from your
+                presentation slides. Our AI analyzes the content and suggests
+                relevant questions.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, borderRadius: "20px" }}
+              >
+                Learn More
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">
+                Intelligent Answer Suggestions
+              </Typography>
+              <hr
+                style={{
+                  border: "0",
+                  borderTop: "1px solid #eee",
+                  margin: "16px 0",
+                }}
+              />
+              <Typography>
+                Along with the questions, receive precise answer suggestions
+                based on the text, ensuring comprehensive QnA pairs.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, borderRadius: "20px" }}
+              >
+                Learn More
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">Customizable Output</Typography>
+              <hr
+                style={{
+                  border: "0",
+                  borderTop: "1px solid #eee",
+                  margin: "16px 0",
+                }}
+              />
+              <Typography>
+                Tailor the questions to your specific needs by adjusting
+                difficulty levels, focus areas, and more, to create a perfect
+                QnA set.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, borderRadius: "20px" }}
+              >
+                Learn More
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box sx={{ my: 6 }}>
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ mb: 4, textAlign: "center" }}
+        >
+          Pricing Plans
+        </Typography>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} md={5}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">Basic Plan</Typography>
+              <hr
+                style={{
+                  border: "0",
+                  borderTop: "1px solid #eee",
+                  margin: "16px 0",
+                }}
+              />
+              <Typography>
+                <strong>$9.99/month</strong>
+              </Typography>
+              <Typography>
+                Ideal for individuals or small teams. Get access to core
+                features, including basic question generation and limited
+                customization options.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, borderRadius: "20px" }}
+              >
+                Choose Plan
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={5}>
+            <Box
+              sx={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">Pro Plan</Typography>
+              <hr
+                style={{
+                  border: "0",
+                  borderTop: "1px solid #eee",
+                  margin: "16px 0",
+                }}
+              />
+              <Typography>
+                <strong>$19.99/month</strong>
+              </Typography>
+              <Typography>
+                Perfect for growing teams. Includes all Basic features, plus
+                advanced customization, priority support, and increased
+                generation limits.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, borderRadius: "20px" }}
+              >
+                Choose Plan
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
