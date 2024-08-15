@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import {
   Box,
@@ -21,7 +21,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from "next/navigation";
 
 export default function GenerateQuestionsPage() {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
 
   const [text, setText] = useState("");
@@ -43,8 +43,9 @@ export default function GenerateQuestionsPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setQuestions(data.questions);
-        setFilteredQuestions(data.questions);
+        console.log("console response:", data.questions.questions);
+        setQuestions(data.questions.questions);
+        setFilteredQuestions(data.questions.questions); // Initialize with full set of questions
       } else {
         console.error("Failed to generate questions");
       }
@@ -53,24 +54,26 @@ export default function GenerateQuestionsPage() {
     }
   };
 
-  // Handle filtering
-  const handleFilter = () => {
+  // UseEffect to apply filters whenever the filter values change
+  useEffect(() => {
     let filtered = questions;
 
     if (difficultyFilter) {
       filtered = filtered.filter(
-        (question) => question.difficulty === difficultyFilter
+        (question) =>
+          question.difficulty.toLowerCase() === difficultyFilter.toLowerCase()
       );
     }
 
     if (importanceFilter) {
       filtered = filtered.filter(
-        (question) => question.importance === importanceFilter
+        (question) =>
+          question.importance.toLowerCase() === importanceFilter.toLowerCase()
       );
     }
 
     setFilteredQuestions(filtered);
-  };
+  }, [difficultyFilter, importanceFilter, questions]); // Trigger filtering when any of these change
 
   // Redirect to sign-in page if not signed in
   if (!isLoaded) return null; // Wait for Clerk to load
@@ -109,10 +112,7 @@ export default function GenerateQuestionsPage() {
               <InputLabel>Filter by Difficulty</InputLabel>
               <Select
                 value={difficultyFilter}
-                onChange={(e) => {
-                  setDifficultyFilter(e.target.value);
-                  handleFilter();
-                }}
+                onChange={(e) => setDifficultyFilter(e.target.value)}
                 label="Filter by Difficulty"
               >
                 <MenuItem value="">All</MenuItem>
@@ -127,10 +127,7 @@ export default function GenerateQuestionsPage() {
               <InputLabel>Filter by Importance</InputLabel>
               <Select
                 value={importanceFilter}
-                onChange={(e) => {
-                  setImportanceFilter(e.target.value);
-                  handleFilter();
-                }}
+                onChange={(e) => setImportanceFilter(e.target.value)}
                 label="Filter by Importance"
               >
                 <MenuItem value="">All</MenuItem>
@@ -144,28 +141,34 @@ export default function GenerateQuestionsPage() {
       </Box>
 
       {/* Questions Display */}
-      {filteredQuestions.map((item, index) => (
-        <Accordion key={index}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`panel${index}-content`}
-            id={`panel${index}-header`}
-          >
-            <Typography>{item.question}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              <strong>Answer:</strong> {item.answer}
-            </Typography>
-            <Typography>
-              <strong>Difficulty:</strong> {item.difficulty}
-            </Typography>
-            <Typography>
-              <strong>Importance:</strong> {item.importance}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+      {filteredQuestions.length > 0 ? (
+        filteredQuestions.map((item, index) => (
+          <Accordion key={index}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}-content`}
+              id={`panel${index}-header`}
+            >
+              <Typography>{item.question}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                <strong>Answer:</strong> {item.answer}
+              </Typography>
+              <Typography>
+                <strong>Difficulty:</strong> {item.difficulty}
+              </Typography>
+              <Typography>
+                <strong>Importance:</strong> {item.importance}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))
+      ) : (
+        <Typography>
+          No questions available. Please generate some questions.
+        </Typography>
+      )}
     </Container>
   );
 }
