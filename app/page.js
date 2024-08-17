@@ -20,6 +20,33 @@ export default function Home() {
   const { isLoaded, isSignedIn } = useUser(); // Destructure user state
   const router = useRouter();
 
+  const handleSubmitCheckOut = async () => {
+    const checkOutSession = await fetch("api/checkout_sessions", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3000",
+      },
+    });
+
+    const checkOutSessionJSON = await checkOutSession.json();
+    if (checkOutSession.statusCode == 500) {
+      console.log(
+        "Error creating checkout session",
+        checkOutSessionJSON.message || "Unknown error"
+      );
+      return;
+    }
+
+    const stripe = await getStripe();
+    const error = await stripe.redirectToCheckout({
+      sessionId: checkOutSessionJSON.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+
   const handleGenerateClick = () => {
     if (isLoaded && isSignedIn) {
       router.push("/generate");
@@ -273,6 +300,7 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2, borderRadius: "20px" }}
+                onClick={handleSubmitCheckOut}
               >
                 Choose Plan
               </Button>
