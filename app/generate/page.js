@@ -230,7 +230,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function GenerateQuestionsPage() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -326,16 +326,17 @@ export default function GenerateQuestionsPage() {
     if (!user) return; // Ensure the user is authenticated
 
     try {
-      // Create a reference to the user's document
-      const userDocRef = collection(
+      // Create a reference to the document with the specific saveName
+      const docRef = doc(
         db,
         "saved_questions",
         user.id,
-        "saved_sets"
+        "saved_sets",
+        saveName
       );
 
-      // Add the saved set under the user's document with the saveName as the document ID
-      await addDoc(userDocRef, {
+      // Set the document with the questions and metadata
+      await setDoc(docRef, {
         name: saveName,
         questions: questions,
         createdAt: new Date(),
@@ -344,6 +345,7 @@ export default function GenerateQuestionsPage() {
       // Close the modal after saving
       setModalOpen(false);
       setSaveName("");
+
       // Refresh saved chats after saving
       const savedChatsRef = collection(
         db,
