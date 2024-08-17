@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import getStripe from "@/utils/getStripe";
 import Link from "next/link";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import {
   AppBar,
   Box,
@@ -12,8 +14,20 @@ import {
   Typography,
 } from "@mui/material";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { isLoaded, isSignedIn } = useUser(); // Destructure user state
+  const router = useRouter();
+
+  const handleGenerateClick = () => {
+    if (isLoaded && isSignedIn) {
+      router.push("/generate");
+    } else {
+      router.push("/sign-in");
+    }
+  };
+
   return (
     <Container maxWidth={false} disableGutters>
       <Head>
@@ -68,6 +82,7 @@ export default function Home() {
           variant="contained"
           color="primary"
           sx={{ borderRadius: "20px" }}
+          onClick={handleGenerateClick}
         >
           Generate QnA
         </Button>

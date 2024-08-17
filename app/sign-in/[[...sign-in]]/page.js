@@ -45,7 +45,7 @@ export default function SignInPage() {
           minHeight: "100vh",
         }}
       >
-        <SignIn />
+        <SignIn afterSignInUrl="/generate" />
       </Container>
     </>
   );
